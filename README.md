@@ -2,8 +2,8 @@
 ### Some APIs for my Home Automation
 
 - Ambilight TVs:
-	-- Android TV: ambilight.sh
-	-- Smart TV: ambilight2.sh
+  + Android TV: ambilight.sh
+  + Smart TV: ambilight2.sh
 - Philips Hue
 - Domoticz
 - Telegram bot
