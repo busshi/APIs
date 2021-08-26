@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file=$API"/.loginTV"
+file="${API}/.loginTV"
 
 randomString()
 {

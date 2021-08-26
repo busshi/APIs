@@ -2,12 +2,12 @@
 
 get()
 {
-curl -k -s -X GET $TV2IP2$1 || curl -k -s -X GET $TV2IP$1
+curl -k -s -X GET $TV2IP$1 || curl -k -s -X GET $TV2IP2$1
 }
 
 post()
 {
-curl -k -s -X POST $TV2IP2$1 || curl -k -s -X POST $TV2IP$1
+curl -k -s -X POST $TV2IP$1 || curl -k -s -X POST $TV2IP2$1
 }
 
 app()
@@ -29,10 +29,12 @@ case "$1" in
 			post "/ambilight/currentconfiguration -d {\"styleName\":\"FOLLOW_VIDEO\",\"isExpert\":\"false\",\"menuSetting\"=\"NATURAL\"}"
 			sleep 1
 			post "/input/key -d {\"key\":\"WatchTV\"}"
+		        orange_decoder.sh on
+                        h=$( date +%H | bc )
+                        [ $h -lt 6 -o $h -gt 18 ] && { sleep 2; post "/HueLamp/power -d {\"power\":\"On\"}"; }
 			domo_api.sh update_var_value "TV2powerstate" "On" "2"
 		fi
-		orange_decoder.sh on
-		;;
+                ;;
         "off")
 		status=$( get "/powerstate" | jq -r .powerstate )
 	        if [ "$status" = "On" ] ; then
