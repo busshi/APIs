@@ -56,10 +56,6 @@ curl -X PUT -d '{"on":'$cmd2 $HUE/groups/$cmd/action
 
 
 if [ "$1" = "maison" ] && [ "$2" = "off" ] ; then
-#	for name in "Lumière Entrée" "Lumière Couloir" "Lumière Salle de Bain" "Lumière WC" ; do
-#		idx=$( domo_api.sh get_device_idx "$name" )
-#		curl -s $Domoticz'/json.htm?type=command&param=switchlight&idx='$idx'&switchcmd=Off'
-#	done
 	ambilight.sh off
 	ambilight2.sh off
 fi

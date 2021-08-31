@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 
 [ -z $3 ] && duree=5 || duree=$3
@@ -29,7 +29,7 @@ case "$1" in
 	curl -s -H "Content-Type; application/json" -X POST $PIPUP/notify -d '{"message": "'$2'", "messageSize": "'$3'", "position": 1, "duration": 2, "backgroundColor": "#00000000"}'
 	;;
    *)
-	data=$( cat $CDH/.notif.json | sed "s/titre/$1/" | sed "s/msg/$2/" | sed "s/duree/$duree/" | sed "s/endroit/$position/" | sed "s/couleur/$couleur/")
+	data=$( cat $API/.notif.json | sed "s/titre/$1/" | sed "s/msg/$2/" | sed "s/duree/$duree/" | sed "s/endroit/$position/" | sed "s/couleur/$couleur/")
 	curl -s --header "Content-Type: application/json" -X POST $PIPUP/notify -d "$data"
 	;;
 esac
