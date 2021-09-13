@@ -44,7 +44,7 @@ case "$1" in
         curl -s -X POST 'https://api.telegram.org/bot'$BusshiBot'/KickChatMember' -d '{"chat_id": "'$1'", "user_id": '$2'}'
         ;;
    *)
-        echo "Mauvaise syntaxe => actions.sh <sendMessage|sendPhoto|sendDocument|sendSticker|sendDice|sendPoll|inlineKb|removeKb|forceReply|kick> <BotToken> <Dest> <message|question|msg_id|...>"
+        echo "Usage: ./actions.sh <sendMessage|sendPhoto|sendDocument|sendSticker|sendDice|sendPoll|inlineKb|removeKb|forceReply|kick> <BotToken> <Dest> <message|question|msg_id|...>"
         ;;
 esac
 

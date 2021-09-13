@@ -12,7 +12,7 @@ curl -k -s -X POST $TV2IP$1 || curl -k -s -X POST $TV2IP2$1
 
 app()
 {
-curl -k -s -X POST $TV2IP"/activities/launch" -d "$1" || curl -k -s -X POST $TV2IP2"/activities/launch" -d "$1"
+curl -k -s -X POST "${TV2IP}/activities/launch" -d "$1" || curl -k -s -X POST "${TV2IP2}/activities/launch" -d "$1"
 }
 
 
@@ -164,7 +164,7 @@ case "$1" in
 		domo_api.sh update_var_value "TV2powerstate" "$check" "2"
 		;;
         *)
-                echo "Mauvais paramètre... => ambilight2.sh [commande]"
+                echo "Usage: ./ambilight2.sh [command]"
                 exit 1
                 ;;
 esac

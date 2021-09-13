@@ -57,7 +57,7 @@ curl -k -s --digest --user $mdp -X POST $TVIP$1 || curl -k -s --digest --user $m
 
 app()
 {
-curl -k -s --digest --user $mdp -X POST $TVIP"/activities/launch" -d "$1" || curl -k -s --digest --user $mdp -X POST $TVIP2"/activities/launch" -d "$1"
+curl -k -s --digest --user $mdp -X POST "${TVIP}/activities/launch" -d "$1" || curl -k -s --digest --user $mdp -X POST "${TVIP2}/activities/launch" -d "$1"
 }
 
 
@@ -260,7 +260,7 @@ case "$1" in
 		check=$( get "/powerstate" | jq -r '.powerstate' )
 		updateVAR "$check"
 		;;
-	"au_lit")
+	"goto_sleep")
 #		orange_decoder.sh off
 		power_on &
 		sleep 15
@@ -271,7 +271,7 @@ case "$1" in
 		done
 		;;
         *)
-                echo "Mauvais paramètre... => ambilight.sh [commande]"
+                echo "Usage: ./ambilight.sh [command]"
                 exit 1
                 ;;
 esac
