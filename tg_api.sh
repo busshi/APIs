@@ -18,7 +18,11 @@ case "$1" in
         curl -s -F 'chat_id='$3 'https://api.telegram.org/bot'$2'/'$1 -F 'document=@'"$4"
         ;;
    "sendSticker")
-        curl -s -X POST 'https://api.telegram.org/bot'$2'/'$1 -F "sticker=$4" -F "chat_id=$3"
+	if [ "$5" = "mute" ] ; then
+		curl -s 'https://api.telegram.org/bot'$2'/'$1 -d 'disable_notification=true' -d "sticker=$4" -d "chat_id=$3"
+	else
+		curl -s -X POST 'https://api.telegram.org/bot'$2'/'$1 -F "sticker=$4" -F "chat_id=$3"
+	fi
         ;;
    "sendDice")
         curl -s -X POST 'https://api.telegram.org/bot'$2'/'$1 -F "emoji=$4" -F "chat_id=$3"
