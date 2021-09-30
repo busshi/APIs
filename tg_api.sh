@@ -31,7 +31,6 @@ case "$1" in
         curl -s -X POST 'https://api.telegram.org/bot'"$2"'/'"$1"'?chat_id='"$3"'&question='"$4"'&options=%5B'"$5"'%5D&is_anonymous=False&disable_notification=True'
         ;;
    "inlineKb")
-#	kb='{"text":"1","callback_data":"done"}'
 	curl -s -k -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$4\", \"chat_id\":\"$3\", \"reply_markup\":{\"inline_keyboard\":[[$5]]}}" "https://api.telegram.org/bot$2/sendMessage"
 	;;
    "removeKb")

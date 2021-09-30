@@ -4,6 +4,7 @@ cmd()
 {
 cmd=0
 [ "$1" = "ok" ] && cmd=352
+[ "$1" = "netflix" ] && cmd=70
 [ "$1" = "on" -o "$1" = "off" ] && cmd=116
 
 [[ $cmd -gt 0 ]] && curl -s "${ORANGE}/remoteControl/cmd?operation=01&key=${cmd}&mode=0"
@@ -21,7 +22,7 @@ case "$1" in
 	"on" | "off")
 		powerstate "$1"
 		;;
-	"ok")
+	"ok" | "netflix")
 		cmd "$1"
 		;;
 	*)
