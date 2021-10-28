@@ -1,20 +1,59 @@
 #!/bin/bash
 
+list_room()
+{
+for id in $(seq 1 20); do
+	room=$(curl -s -X GET $HUE/groups | jq . | grep "\"$id\"" -A1 | grep name | cut -d\" -f4)
+	[ "$room" != "" ] && echo "$id: $room"
+done
+exit 0
+}
+
+
+toggle()
+{
+[ "$state" = "on" ] && state="true" || state="false"
+curl -X PUT -d "{\"on\":${state}}" ${HUE}/groups/${idx}/action
+}
+
+
+toggle_home()
+{
+if [ "$2" != "on" -a "$2" != "off" ]; then
+	echo "Usage: ./hue_api.sh maison [on|off]"
+	exit 1
+else
+	idx=0
+	state="$2"
+	toggle
+fi
+}
+
+
+
+get_idx()
+{
+room="$1"
+
+[ -z "$2" ] && { echo "Usage: ./hue_api.sh [room_name] [on|off]"; exit 1; }
+state="$2"
+
+while read line; do
+	check=$(echo $line | grep -i "$room")
+	[ "$check" != "" ] && { idx=$( echo $check | cut -d: -f1 ) && break; }
+done <<< $(list_room)
+
+[ -n "$idx" ] && toggle || echo -e "[${room}] not found!!\nUsage: './hue_api.sh list' to list all available rooms"
+}
+
+
+
 case "$1" in
+	"list")
+		list_room
+		;;
 	"maison")
-		cmd=0
-		;;
-        "salon")
-		cmd=6
-		;;
-   	"cuisine")
-		cmd=4
-		;;
-	"chambre")
-		cmd=2
-		;;
-	"robin")
-		cmd=12
+		toggle_home "$1" "$2"
 		;;
 	"alarme")
 		r=$( curl -X GET ${HUE}/lights/4 )
@@ -29,36 +68,19 @@ case "$1" in
 		else
 			curl -X PUT -d '{"on":true,"bri":'${bri}',"hue":'${hue}',"sat":'${sat}',"alert":"none"}' ${HUE}/lights/4/state
 		fi
-		exit 0
 		;;
 	*)
-		echo "Usage: ./hue_api.sh <salon|cuisine|chambre|robin|muscu|maison> <on|off>"
-		exit 1
+		get_idx "$1" "$2"
 		;;
 esac
 
-case "$2" in
-	"off")
-		cmd2=false}
-		;;
-	"on")
-		cmd2=true}
-		;;
-	*)
-		if [ ! $1 = "alarme" ] ; then
-			echo "Usage: ./hue_api.sh <salon|cuisine|chambre|robin|muscu|maison> <on|off>"
-			exit 1
-		fi
-		;;
-esac
-
-curl -X PUT -d '{"on":'${cmd2} ${HUE}/groups/${cmd}/action
 
 
 if [ "$1" = "maison" ] && [ "$2" = "off" ] ; then
 	ambilight.sh off
 	ambilight2.sh off
 fi
+
 
 exit 0
 
