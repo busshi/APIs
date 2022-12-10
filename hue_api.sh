@@ -12,20 +12,22 @@ exit 0
 
 toggle()
 {
-[ "$state" = "on" ] && state="true" || state="false"
+idx=$1
+[ "$2" = "on" ] && state="true" || state="false"
 curl -X PUT -d "{\"on\":${state}}" ${HUE}/groups/${idx}/action
 }
 
 
 toggle_home()
 {
-if [ "$2" != "on" -a "$2" != "off" ]; then
+if [ "$1" != "on" -a "$1" != "off" ]; then
 	echo "Usage: ./hue_api.sh maison [on|off]"
 	exit 1
 else
-	idx=0
-	state="$2"
-	toggle
+#	idx=0
+#	state="$1"
+        toggle $(get_idx "En haut") off
+        toggle $(get_idx "En bas") off
 fi
 }
 
@@ -43,7 +45,7 @@ while read line; do
 	[ "$check" != "" ] && { idx=$( echo $check | cut -d: -f1 ) && break; }
 done <<< $(list_room)
 
-[ -n "$idx" ] && toggle || echo -e "[${room}] not found!!\nUsage: './hue_api.sh list' to list all available rooms"
+[ -n "$idx" ] && toggle "$idx" "$state" || echo -e "[${room}] not found!!\nUsage: './hue_api.sh list' to list all available rooms"
 }
 
 
@@ -53,7 +55,7 @@ case "$1" in
 		list_room
 		;;
 	"maison")
-		toggle_home "$1" "$2"
+		toggle_home "$2"
 		;;
 	"alarme")
 		r=$( curl -X GET ${HUE}/lights/4 )

@@ -26,12 +26,12 @@ fi
 
 case "$1" in
    "boubou")
-	curl -s -H "Content-Type: application/json" -X POST ${PIPUP}/notify -d '{"message": "'$2'", "messageSize": "'$3'", "position": 1, "duration": 2, "backgroundColor": "#00000000"}'
+	curl -s -H "Content-Type: application/json" -X POST ${PIPUP}/notify -d '{"message": "'$2'", "messageSize": "'$3'", "position": 1, "duration": 2, "backgroundColor": "#00000000"}' ||  curl -s -H "Content-Type: application/json" -X POST ${PIPUP2}/notify -d '{"message": "'$2'", "messageSize": "'$3'", "position": 1, "duration": 2, "backgroundColor": "#00000000"}'
 	;;
    *)
 	sample="{\"title\":\"TITLE\",\"message\":\"MESSAGE\",\"duration\":DURATION,\"position\":POSITION,\"titleSize\":20,\"titleColor\":\"COLOR\",\"messageSize\":16,\"backgroundColor\":\"#CC000000\"}"
 	data=$( echo "$sample" | sed "s/TITLE/$1/" | sed "s/MESSAGE/$2/" | sed "s/DURATION/$duration/" | sed "s/POSITION/$position/" | sed "s/COLOR/$color/" )
-	curl -s -H "Content-Type: application/json" -X POST ${PIPUP}/notify -d "$data"
+	curl -s -H "Content-Type: application/json" -X POST ${PIPUP}/notify -d "$data" || curl -s -H "Content-Type: application/json" -X POST ${PIPUP2}/notify -d "$data"
 	;;
 esac
 

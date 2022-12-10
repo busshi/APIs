@@ -43,7 +43,7 @@ case "$1" in
 			post "/input/key -d {\"key\":\"Standby\"}"
 			domo_api.sh update_var_value "TV2powerstate" "Standby" "2"
 		fi
-		orange_decoder.sh off
+#		orange_decoder.sh off
 		;;
         "+")
                 post "/input/key -d {\"key\":\"VolumeUp\"}"
