@@ -20,14 +20,20 @@ curl -X PUT -d "{\"on\":${state}}" ${HUE}/groups/${idx}/action
 
 toggle_home()
 {
+if [ "$1" = "maison" ] && [ "$2" = "off" ] ; then
+        ambilight.sh off
+        ambilight2.sh off
+fi
+
+
 if [ "$1" != "on" -a "$1" != "off" ]; then
 	echo "Usage: ./hue_api.sh maison [on|off]"
 	exit 1
-else
-#	idx=0
-#	state="$1"
-        toggle $(get_idx "En haut") off
-        toggle $(get_idx "En bas") off
+#else
+##	idx=0
+##	state="$1"
+#        toggle $(get_idx "En haut") off
+#        toggle $(get_idx "En bas") off
 fi
 }
 
@@ -48,9 +54,20 @@ done <<< $(list_room)
 [ -n "$idx" ] && toggle "$idx" "$state" || echo -e "[${room}] not found!!\nUsage: './hue_api.sh list' to list all available rooms"
 }
 
+check_salon_sensor()
+{
+state=$(curl -s $HUE/sensors/32 | jq -r .config.on)
+#new_state=true
+#[ "$state" = "false" ] && curl -X PUT $HUE/sensors/32/config -d "{\"on\": ${new_state}}"
+[ "$1" = "on" ] && new_state=true || new_state=false
+[ "$state" = "false" ] && curl -X PUT $HUE/sensors/32/config -d "{\"on\": $new_state}"
+}
 
 
 case "$1" in
+        "sensor")
+		check_salon_sensor $2
+		;;
 	"list")
 		list_room
 		;;
@@ -76,12 +93,6 @@ case "$1" in
 		;;
 esac
 
-
-
-if [ "$1" = "maison" ] && [ "$2" = "off" ] ; then
-	ambilight.sh off
-	ambilight2.sh off
-fi
 
 
 exit 0
