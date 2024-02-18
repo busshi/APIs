@@ -3,12 +3,12 @@
 
 get_device_idx()
 {
-curl -s ${Domoticz}'/json.htm?type=devices' | jq --arg IDX "$1" ' .result[] | select(.Name == $IDX )' | jq -r .idx
+curl -s ${Domoticz}'/json.htm?type=command&param=devices_list' | jq --arg IDX "$1" ' .result[] | select(.name == $IDX )' | jq -r .idx
 }
 
 get_device_value()
 {
-curl -s ${Domoticz}'/json.htm?type=devices&rid='$1 | jq -r .result[].Data
+curl -s ${Domoticz}'/json.htm?type=command&param=getdevices&rid='$1 | jq -r .result[].Data
 }
 
 update_device_value()
