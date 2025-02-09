@@ -25,7 +25,7 @@ if [ -z "$1" ] || [ -z "$2" ] ; then
 fi
 
 case "$1" in
-   "boubou")
+   "kids")
 	curl -s -H "Content-Type: application/json" -X POST ${PIPUP}/notify -d '{"message": "'$2'", "messageSize": "'$3'", "position": 1, "duration": 2, "backgroundColor": "#00000000"}' ||  curl -s -H "Content-Type: application/json" -X POST ${PIPUP2}/notify -d '{"message": "'$2'", "messageSize": "'$3'", "position": 1, "duration": 2, "backgroundColor": "#00000000"}'
 	;;
    *)

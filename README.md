@@ -5,7 +5,8 @@
   + Android TV: ambilight.sh
   + Smart TV: ambilight2.sh
 - Philips Hue
+- Philiphs HUE API v2
 - Domoticz
 - Telegram bot
-- Orange decoder *(in progress)*
+- Orange decoder
 - PIPUP
