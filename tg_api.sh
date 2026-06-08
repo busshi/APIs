@@ -3,19 +3,22 @@
 case "$1" in
    "sendMessage")
         if [ "$5" = "mute" ] ; then
-                curl -s -d "chat_id=$3" -d 'disable_notification=true' --data-urlencode "text=$4" 'https://api.telegram.org/bot'$2'/'$1
+                curl -s -d "chat_id=$3" -d 'disable_notification=true' --data-urlencode "text=$4" "https://api.telegram.org/bot$2/$1"
+        elif [ "$5" = "markdown" ] ; then
+                curl -s -d "chat_id=$3" -d "parse_mode=$5" --data-urlencode "text=$4" "https://api.telegram.org/bot$2/$1"
         else
-                curl -s -d "chat_id=$3" --data-urlencode "text=$4" 'https://api.telegram.org/bot'$2'/'$1
+                curl -s -d "chat_id=$3" --data-urlencode "text=$4" "https://api.telegram.org/bot$2/$1"
         fi
         ;;
    "sendPhoto")
-        curl -s -X POST 'https://api.telegram.org/bot'$2'/'$1 -F chat_id=$3 -F parse_mode=HTML -F caption="$5" -F photo="$4"
+        response=$(curl -s -X POST "https://api.telegram.org/bot$2/$1" -F chat_id=$3 -F parse_mode=HTML -F caption="$5" -F photo="$4")
+	echo "$response" | grep -q '"ok":true'
         ;;
    "sendVideo")
-	curl -X POST 'https://api.telegram.org/bot'$2'/'$1 -F chat_id=$3 -F video='@'"$4"
+	curl -X POST "https://api.telegram.org/bot$2/$1" -F chat_id=$3 -F video="@$4"
 	;;
    "sendDocument")
-        curl -s -F 'chat_id='$3 'https://api.telegram.org/bot'$2'/'$1 -F 'document=@'"$4"
+        curl -s -X POST -F "chat_id=$3" "https://api.telegram.org/bot$2/$1" -F "document=$4"
         ;;
    "sendSticker")
 	if [ "$5" = "mute" ] ; then
@@ -28,7 +31,7 @@ case "$1" in
         curl -s -X POST 'https://api.telegram.org/bot'$2'/'$1 -F "emoji=$4" -F "chat_id=$3"
         ;;
    "sendPoll")
-        curl -s -X POST 'https://api.telegram.org/bot'"$2"'/'"$1"'?chat_id='"$3"'&question='"$4"'&options=%5B'"$5"'%5D&is_anonymous=False&disable_notification=True'
+        curl -X POST "https://api.telegram.org/bot$2/$1?chat_id=$3&question=$4&options=%5B$5%5D&is_anonymous=False&disable_notification=True"
         ;;
    "inlineKb")
 	curl -s -k -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$4\", \"chat_id\":\"$3\", \"reply_markup\":{\"inline_keyboard\":[[$5]]}}" "https://api.telegram.org/bot$2/sendMessage"
@@ -47,6 +50,4 @@ case "$1" in
         ;;
 esac
 
-exit 0
-
-
+exit $?
