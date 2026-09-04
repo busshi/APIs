@@ -1,11 +1,7 @@
 #!/bin/bash
 
-
-[ "$1" = "hue" ] && BRIDGE=$HUE || BRIDGE="$1"
-
-
-api_key=$( echo "$BRIDGE" | cut -d "/" -f5 )
-bridge=$( echo "$BRIDGE" | cut -d "/" -f3 )
+api_key=$( echo "$HUE" | cut -d "/" -f5 )
+bridge=$( echo "$HUE" | cut -d "/" -f3 )
 
 url="https://${bridge}/clip/v2"
 
@@ -127,44 +123,78 @@ else
 fi
 }
 
-case "$2" in
+home_off()
+{
+state=$( get_light_state "Pompe" )
+
+curl -s -k -X PUT "$url/resource/grouped_light/13680ce9-f499-4061-81af-395750ac0720" \
+  -H "Content-Type: application/json" \
+  -H "hue-application-key: $api_key" \
+  -d '{"on":{"on":false}}' > /dev/null
+
+if [ "$state" = "true" ]; then
+	sleep 1
+	id=$( get_light_id "Pompe" )
+	toggle_light "$id" "on"
+fi
+}
+
+get_light_id()
+{
+id=$( curl -s -k "$url/resource/light" -H "Content-Type: application/json" -H "hue-application-key: $api_key" | jq -r ".data[] | select(.metadata.name == \"$1\")" | jq -r .id )
+echo $id
+}
+
+get_light_state()
+{
+id=$( get_light_id "$1" )
+state=$( curl -s -k "$url/resource/light/$id" -H "Content-Type: application/json" -H "hue-application-key: $api_key" | jq -r '.data[0].on.on' )
+echo $state
+}
+
+case "$1" in
         "sensors_on")
-		"$2"
+		"$1"
                 outdoor_sensors_on
 		;;
 	"sensors_off")
-		shift 2
+		shift 1
 		# Pass all sensors name as arguments, example: "Bedroom Sensor" "Kitchen Sensor"
 		sensors_off "$@"
 		;;
 	"get_sensor_id")
-		"$2" "$3"
+		"$1" "$2"
 		;;
         "get_room_id")
-                "$2" "$3"
+                "$1" "$2"
                 ;;
         "get_scene_id")
-                "$2" "$3"
+                "$1" "$2"
                 ;;
         "rooms")
 		get_rooms
 		;;
 	"scenes")
-		room_id=$( get_room_id "$3" )
+		room_id=$( get_room_id "$2" )
 		get_scenes $room_id
 		;;
 	"scene")
-		scene_id=$( get_scene_id "$3" )
-		toggle_scene "$scene_id" "$4"
+		scene_id=$( get_scene_id "$2" )
+		toggle_scene "$scene_id" "$3"
+		;;
+	"home_off")
+		"$1"
+		;;
+	"get_light_id" | "get_light_state" )
+		"$1" "$2"
 		;;
 	*)
-		echo "Usage $0 [bridge] [scene | scenes | rooms | sensors_on | sensors_off | get_sensor_id | get_room_id | get_scene_id]"
+		echo "Usage $0 [home_off | scene | scenes | rooms | sensors_on | sensors_off | get_sensor_id | get_room_id | get_scene_id | get_light_id]"
 		exit 1
 		;;
 esac
 
 
-exit 0
 
 
 
