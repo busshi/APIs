@@ -1,10 +1,9 @@
-#!/bin/bash
+#!/bin/bash -l
 
 api_key=$( echo "$HUE" | cut -d "/" -f5 )
 bridge=$( echo "$HUE" | cut -d "/" -f3 )
 
 url="https://${bridge}/clip/v2"
-
 
 get_sensor_id()
 {
@@ -126,7 +125,7 @@ fi
 home_off()
 {
 state=$( get_light_state "Pompe" )
-
+echo "statee $state"
 curl -s -k -X PUT "$url/resource/grouped_light/13680ce9-f499-4061-81af-395750ac0720" \
   -H "Content-Type: application/json" \
   -H "hue-application-key: $api_key" \
@@ -137,6 +136,7 @@ if [ "$state" = "true" ]; then
 	id=$( get_light_id "Pompe" )
 	toggle_light "$id" "on"
 fi
+nuki_api.sh lock
 }
 
 get_light_id()
@@ -193,8 +193,3 @@ case "$1" in
 		exit 1
 		;;
 esac
-
-
-
-
-
